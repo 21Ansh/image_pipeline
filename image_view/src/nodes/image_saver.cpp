@@ -38,6 +38,9 @@
 #include <image_transport/image_transport.h>
 #include <camera_calibration_parsers/parse.h>
 #include <boost/format.hpp>
+#include<iostream>
+#include <sstream>  // for string streams 
+#include <string>  // for string 
 
 #include <std_srvs/Empty.h>
 #include <std_srvs/Trigger.h>
@@ -151,6 +154,10 @@ private:
       ROS_ERROR("Unable to convert %s image to %s", image_msg->encoding.c_str(), encoding.c_str());
       return false;
     }
+    std::ostringstream str1;
+    str1 << image_msg->header.stamp;
+    str1 << ".png";
+    std::string name = str1.str();
 
     if (!image.empty()) {
       try {
@@ -164,8 +171,8 @@ private:
       } catch (...) { g_format.clear(); }
 
       if ( save_all_image || save_image_service ) {
-        cv::imwrite(filename, image);
-        ROS_INFO("Saved image %s", filename.c_str());
+        cv::imwrite(name, image);
+        ROS_INFO("Saved image %s", name);
 
         save_image_service = false;
       } else {
